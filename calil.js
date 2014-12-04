@@ -139,6 +139,8 @@ calil = {
       return q;
     } else {
       log('queue complete');
+      $('.progress-bar').css('width', '100%');
+      $('.percent').html('100% 完了');
       this.completeQueue();
       return null;
     }

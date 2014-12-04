@@ -122,6 +122,8 @@ calil =
       return q
     else
       log 'queue complete'
+      $('.progress-bar').css('width', '100%')
+      $('.percent').html('100% 完了')
       @completeQueue()
       return null
   # キュー終了時に実行する関数をセット

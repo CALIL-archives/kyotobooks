@@ -12,11 +12,13 @@ http://linkdata.org/work/rdf1s1294i
 # 使用API
 
 図書館 API | カーリル
+
 https://calil.jp/doc/api.html
 
 # 利用ライブラリ
 
 encoding.js
+
 https://github.com/polygonplanet/encoding.js
 
 
@@ -38,4 +40,5 @@ http://127.0.0.1:8080
 # 参考にしたページ
 
 JavaScript - CSVをパースする - Qiita
+
 http://qiita.com/_shimizu/items/e45f94e7ee8a75a04e50

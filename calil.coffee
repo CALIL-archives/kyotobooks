@@ -10,7 +10,7 @@ log = (obj)->
 #    return
 #  ), time
 #  dfd.promise()
-#  
+#
 #sleep = (func, time)->
 #  setTimeout ->
 #    func()
@@ -75,9 +75,10 @@ calil =
       dataType: 'jsonp'
       success: defer.resolve
       error: defer.reject
-  
+
   parseTSV: ->
     url = 'kyotobook_list.txt'
+#    url = 'kyotobook_list_mini.txt'
     defer = $.Deferred()
     $.ajax
       url: url
@@ -85,15 +86,11 @@ calil =
       success: defer.resolve
       error: defer.reject
   QueueLimit : null
-#  QueueLimit : 3
   # キューの初期化
   initQueue: ->
     i = 0
     for isbn in @isbns
       @queue[isbn] = 0
-      if @QueueLimit and i>@QueueLimit
-        break
-      i+=1
   getISBNFromQueue : ->
     # 値が0のキューを探す
     q = null
@@ -109,7 +106,12 @@ calil =
   # 次のキューを取得
   getNextQueue: (isbn)->
     @queue[isbn] = true
-    q = @getISBNFromQueue()
+    # 値が0のキューを探す
+    q = null
+    for isbn, queue of @queue
+      if queue==0
+        q = isbn
+        break
     if q
       return q
     else
@@ -118,10 +120,11 @@ calil =
       return null
   # キュー終了時に実行する関数をセット
   completeQueue: ->
-    
+
   checkAPI : ()->
     log 'start'
     isbn = @getISBNFromQueue()
+    log isbn
     $('#results #'+isbn+' .status').html('検索中...')
     url = 'http://api.calil.jp/check'
     param =
@@ -188,7 +191,7 @@ calil =
           calil.analyzeData(data.books)
 #          return d.resolve
 #    );return d.promise()
-  
+
   # 本データの取得
   getBookData: (isbn)->
     for book in calil.books
@@ -278,7 +281,7 @@ calil =
       @checkAPI()
     else
       log '終了'
-        
+
 $ ->
   # 京都府の図書館一覧を取得する
   calil.getLibrary().done (libraries)->
@@ -336,11 +339,11 @@ $ ->
 #        log 'complete'
 #        $('#csv').show()
 
-        
+
 # CSVダウンロードボタン
 $('#csv').click ->
   r = []
-  header = ['書名', 'ISBN', '冊数', '公共図書館', '大学図書館', '専門図書館']
+  header = ['書名', 'ISBN', '館数('+calil.libraries.length+'館中)', '公共図書館', '大学図書館', '専門図書館']
   for lib in calil.libraries
     header.push(lib.formal)
   header = header

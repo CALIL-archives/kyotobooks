@@ -96,11 +96,7 @@ calil = {
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       isbn = _ref[_i];
-      this.queue[isbn] = 0;
-      if (this.QueueLimit && i > this.QueueLimit) {
-        break;
-      }
-      _results.push(i += 1);
+      _results.push(this.queue[isbn] = 0);
     }
     return _results;
   },
@@ -123,9 +119,17 @@ calil = {
     }
   },
   getNextQueue: function(isbn) {
-    var q;
+    var q, queue, _ref;
     this.queue[isbn] = true;
-    q = this.getISBNFromQueue();
+    q = null;
+    _ref = this.queue;
+    for (isbn in _ref) {
+      queue = _ref[isbn];
+      if (queue === 0) {
+        q = isbn;
+        break;
+      }
+    }
     if (q) {
       return q;
     } else {
@@ -139,6 +143,7 @@ calil = {
     var defer, isbn, param, url;
     log('start');
     isbn = this.getISBNFromQueue();
+    log(isbn);
     $('#results #' + isbn + ' .status').html('検索中...');
     url = 'http://api.calil.jp/check';
     param = {
@@ -380,7 +385,7 @@ $(function() {
 $('#csv').click(function() {
   var a, array, blob, csvbuf, header, lib, r, sjis_array, uint8_array, _i, _len, _ref;
   r = [];
-  header = ['書名', 'ISBN', '冊数', '公共図書館', '大学図書館', '専門図書館'];
+  header = ['書名', 'ISBN', '館数(' + calil.libraries.length + '館中)', '公共図書館', '大学図書館', '専門図書館'];
   _ref = calil.libraries;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     lib = _ref[_i];

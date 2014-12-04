@@ -133,7 +133,7 @@ calil = {
     }
     if (q) {
       this.checkedCount += 1;
-      percent = parseFloat((this.checkedCount / this.books.length).toFixed(2)) * 100;
+      percent = ((this.checkedCount / this.books.length) * 100).toFixed(2);
       $('.progress-bar').css('width', percent + '%');
       $('.percent').html(percent + '% 完了');
       return q;

@@ -116,7 +116,7 @@ calil =
     if q
       @checkedCount+=1
       # プログレスバーに反映
-      percent = parseFloat((@checkedCount/@books.length).toFixed(2)) * 100
+      percent = ((@checkedCount/@books.length) * 100).toFixed(2)
       $('.progress-bar').css('width', percent+'%')
       $('.percent').html(percent+'% 完了')
       return q

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>京都本</title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+  th {
+    text-align: left; 
+  }
+  #results {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+  }
+  #results th{
+    width: 250px;
+    padding: 6px;
+    text-align: left;
+    vertical-align: top;
+    color: #333;
+    background-color: #eee;
+    border: 1px solid #b9b9b9;
+  }
+  #results td{
+    padding: 6px;
+    background-color: #fff;
+    border: 1px solid #b9b9b9;
+  }
+  #csv {
+    display: none;
+    margin-bottom: 30px;
+  }
+  </style>
+</head>
+<body>
+
+  <table id="results"></table>
+  <input type="button" class="btn btn-default" value="CSVダウンロード" id="csv">
+
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <![endif]-->
+  <!--[if gte IE 9]><!-->
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script src="encoding.min.js"></script>
+  <script src="calil.js"></script>
+</body>
+</html>

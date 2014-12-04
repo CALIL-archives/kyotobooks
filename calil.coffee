@@ -321,10 +321,17 @@ $ ->
       # 終了時の処理
       calil.completeQueue = ->
         $('#csv').show()
-      # 同時に3つ実行する
+      # 同時に実行する
       calil.checkAPI()
-#      calil.checkAPI()
-#      calil.checkAPI()
+      calil.checkAPI()
+      calil.checkAPI()
+      calil.checkAPI()
+      calil.checkAPI()
+      calil.checkAPI()
+      calil.checkAPI()
+      calil.checkAPI()
+      calil.checkAPI()
+      calil.checkAPI()
 #      dfds = []
 #      i = 0
       # タスクをつくる

@@ -386,6 +386,15 @@ $(function() {
       calil.completeQueue = function() {
         return $('#csv').show();
       };
+      calil.checkAPI();
+      calil.checkAPI();
+      calil.checkAPI();
+      calil.checkAPI();
+      calil.checkAPI();
+      calil.checkAPI();
+      calil.checkAPI();
+      calil.checkAPI();
+      calil.checkAPI();
       return calil.checkAPI();
     });
   });

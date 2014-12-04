@@ -60,6 +60,7 @@ calil = {
   systemIds: [],
   isbns: [],
   queue: {},
+  checkedCount: 0,
   getLibrary: function() {
     var defer, param, url;
     url = 'http://api.calil.jp/library';
@@ -101,12 +102,12 @@ calil = {
     return _results;
   },
   getISBNFromQueue: function() {
-    var isbn, q, queue, _ref;
+    var isbn, q, _i, _len, _ref;
     q = null;
-    _ref = this.queue;
-    for (isbn in _ref) {
-      queue = _ref[isbn];
-      if (queue === 0) {
+    _ref = this.isbns;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      isbn = _ref[_i];
+      if (this.queue[isbn] === 0) {
         q = isbn;
         this.queue[isbn] = 1;
         break;
@@ -119,18 +120,22 @@ calil = {
     }
   },
   getNextQueue: function(isbn) {
-    var q, queue, _ref;
+    var percent, q, _i, _len, _ref;
     this.queue[isbn] = true;
     q = null;
-    _ref = this.queue;
-    for (isbn in _ref) {
-      queue = _ref[isbn];
-      if (queue === 0) {
+    _ref = this.isbns;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      isbn = _ref[_i];
+      if (this.queue[isbn] === 0) {
         q = isbn;
         break;
       }
     }
     if (q) {
+      this.checkedCount += 1;
+      percent = parseFloat((this.checkedCount / this.books.length).toFixed(2)) * 100;
+      $('.progress-bar').css('width', percent + '%');
+      $('.percent').html(percent + '% 完了');
       return q;
     } else {
       log('queue complete');
@@ -158,33 +163,37 @@ calil = {
       dataType: 'jsonp',
       success: defer.resolve,
       error: defer.reject
-    }).done(function(data) {
-      log(data);
-      if (data["continue"] === 0 && (data.books != null)) {
-        calil.analyzeData(data.books);
-      }
-      if (data["continue"] === 1) {
-        return calil.recheckAPI(isbn, data.session);
-      }
-    }).fail(function() {
-      if (calil.queue[isbn] <= 3) {
-        setTimeout(function() {
-          return calil.checkAPI(isbn).done(function(data) {
-            log(data);
-            if (data["continue"] === 0 && (data.books != null)) {
-              calil.analyzeData(data.books);
-            }
-            if (data["continue"] === 1) {
-              return calil.recheckAPI(isbn, data.session);
-            }
-          });
-        }, 11000);
-        setTimeout((function() {
-          return calil.queue[isbn]++;
-        }), 1000);
-      }
-      return $('#results #' + isbn + ' .status').html('検索失敗');
-    });
+    }).done((function(_this) {
+      return function(data) {
+        log(data);
+        if (data["continue"] === 0 && (data.books != null)) {
+          _this.analyzeData(data.books);
+        }
+        if (data["continue"] === 1) {
+          return _this.recheckAPI(isbn, data.session);
+        }
+      };
+    })(this)).fail((function(_this) {
+      return function() {
+        if (_this.queue[isbn] <= 3) {
+          setTimeout(function() {
+            return _this.checkAPI(isbn).done(function(data) {
+              log(data);
+              if (data["continue"] === 0 && (data.books != null)) {
+                _this.analyzeData(data.books);
+              }
+              if (data["continue"] === 1) {
+                return _this.recheckAPI(isbn, data.session);
+              }
+            });
+          }, 11000);
+          setTimeout((function() {
+            return _this.queue[isbn]++;
+          }), 1000);
+        }
+        return $('#results #' + isbn + ' .status').html('検索失敗');
+      };
+    })(this));
   },
   recheckAPI: function(isbn, session) {
     var defer, param, url;

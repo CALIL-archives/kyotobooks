@@ -62,6 +62,7 @@ calil =
   systemIds : []
   isbns     : []
   queue     : {}
+  checkedCount: 0
   getLibrary: ->
     url = 'http://api.calil.jp/library'
     param =
@@ -94,8 +95,8 @@ calil =
   getISBNFromQueue : ->
     # 値が0のキューを探す
     q = null
-    for isbn, queue of @queue
-      if queue==0
+    for isbn in @isbns
+      if @queue[isbn]==0
         q = isbn
         @queue[isbn] = 1
         break
@@ -108,11 +109,16 @@ calil =
     @queue[isbn] = true
     # 値が0のキューを探す
     q = null
-    for isbn, queue of @queue
-      if queue==0
+    for isbn in @isbns
+      if @queue[isbn]==0
         q = isbn
         break
     if q
+      @checkedCount+=1
+      # プログレスバーに反映
+      percent = parseFloat((@checkedCount/@books.length).toFixed(2)) * 100
+      $('.progress-bar').css('width', percent+'%')
+      $('.percent').html(percent+'% 完了')
       return q
     else
       log 'queue complete'
@@ -138,27 +144,27 @@ calil =
       dataType: 'jsonp'
       success: defer.resolve
       error: defer.reject
-    .done (data)->
+    .done (data)=>
       log data
       if data.continue==0 and data.books?
-        calil.analyzeData(data.books)
+        @analyzeData(data.books)
       # 継続の場合、セッションを使って再帰処理をかける
       if data.continue==1
-        calil.recheckAPI(isbn, data.session)
-    .fail ->
+        @recheckAPI(isbn, data.session)
+    .fail =>
       # 通信エラー 3回まで再実行する
-      if calil.queue[isbn] <= 3
-        setTimeout(->
-          calil.checkAPI(isbn).done (data)->
+      if @queue[isbn] <= 3
+        setTimeout(=>
+          @checkAPI(isbn).done (data)=>
             log data
             if data.continue==0 and data.books?
-              calil.analyzeData(data.books)
+              @analyzeData(data.books)
             # 継続の場合、セッションを使って再帰処理をかける
             if data.continue==1
-              calil.recheckAPI(isbn, data.session)
+              @recheckAPI(isbn, data.session)
         , 11000)
-        setTimeout (->
-          calil.queue[isbn]++
+        setTimeout (=>
+          @queue[isbn]++
         ), 1000
       $('#results #'+isbn+' .status').html('検索失敗')
 

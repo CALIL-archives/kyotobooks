@@ -326,15 +326,6 @@ $ ->
       calil.completeFunc = ->
         $('#csv').show()
       calil.checkAPI()
-      calil.checkAPI()
-      calil.checkAPI()
-      calil.checkAPI()
-      calil.checkAPI()
-      calil.checkAPI()
-      calil.checkAPI()
-      calil.checkAPI()
-      calil.checkAPI()
-      calil.checkAPI()
 #      dfds = []
 #      i = 0
       # タスクをつくる

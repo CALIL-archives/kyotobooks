@@ -122,7 +122,7 @@ calil =
       return q
     else
       log 'queue complete'
-      $('.progress-bar').css('width', '100%')
+      $('.progress-bar').css('width', '100%').removeClass('active')
       $('.percent').html('100% 完了')
       @completeQueue()
       return null
@@ -272,7 +272,7 @@ calil =
 </table>
 """)
             count += 1
-      result = [@getBookData(isbn).title, @getBookData(isbn).ISBN, count, publicCount, univCount, specialCount]
+      result = [@getBookData(isbn).property.replace('http://libmaro.kyoto.jp/kyotobook_list/', ''), @getBookData(isbn).title, @getBookData(isbn).ISBN, count, publicCount, univCount, specialCount]
       for lib in calil.libraries
         if statuses[lib.systemid]
           status = statuses[lib.systemid]
@@ -358,13 +358,16 @@ $ ->
 # CSVダウンロードボタン
 $('#csv').click ->
   r = []
-  header = ['書名', 'ISBN', '館数('+calil.libraries.length+'館中)', '公共図書館', '大学図書館', '専門図書館']
+  header = ['', '書名', 'ISBN', '館数('+calil.libraries.length+'館中)', '公共図書館', '大学図書館', '専門図書館']
+  # 各図書館をヘッダーに追加
   for lib in calil.libraries
     header.push(lib.formal)
   header = header
   r.push(header)
-  $(calil.results).each (i, result)->
-    r.push(result)
+  for isbn in calil.isbns
+    $(calil.results).each (i, result)->
+      if result[2].replace(/-/g, '')==isbn
+        r.push(result)
   a = document.createElement('a')
   a.download = '京都本.csv'
   a.type = 'text/csv'

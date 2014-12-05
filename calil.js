@@ -139,7 +139,7 @@ calil = {
       return q;
     } else {
       log('queue complete');
-      $('.progress-bar').css('width', '100%');
+      $('.progress-bar').css('width', '100%').removeClass('active');
       $('.percent').html('100% 完了');
       this.completeQueue();
       return null;
@@ -321,7 +321,7 @@ calil = {
           }
         }
       }
-      result = [this.getBookData(isbn).title, this.getBookData(isbn).ISBN, count, publicCount, univCount, specialCount];
+      result = [this.getBookData(isbn).property.replace('http://libmaro.kyoto.jp/kyotobook_list/', ''), this.getBookData(isbn).title, this.getBookData(isbn).ISBN, count, publicCount, univCount, specialCount];
       _ref1 = calil.libraries;
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         lib = _ref1[_i];
@@ -403,9 +403,9 @@ $(function() {
 });
 
 $('#csv').click(function() {
-  var a, array, blob, csvbuf, header, lib, r, sjis_array, uint8_array, _i, _len, _ref;
+  var a, array, blob, csvbuf, header, isbn, lib, r, sjis_array, uint8_array, _i, _j, _len, _len1, _ref, _ref1;
   r = [];
-  header = ['書名', 'ISBN', '館数(' + calil.libraries.length + '館中)', '公共図書館', '大学図書館', '専門図書館'];
+  header = ['', '書名', 'ISBN', '館数(' + calil.libraries.length + '館中)', '公共図書館', '大学図書館', '専門図書館'];
   _ref = calil.libraries;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     lib = _ref[_i];
@@ -413,9 +413,15 @@ $('#csv').click(function() {
   }
   header = header;
   r.push(header);
-  $(calil.results).each(function(i, result) {
-    return r.push(result);
-  });
+  _ref1 = calil.isbns;
+  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+    isbn = _ref1[_j];
+    $(calil.results).each(function(i, result) {
+      if (result[2].replace(/-/g, '') === isbn) {
+        return r.push(result);
+      }
+    });
+  }
   a = document.createElement('a');
   a.download = '京都本.csv';
   a.type = 'text/csv';

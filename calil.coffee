@@ -122,13 +122,7 @@ calil =
       return q
     else
       log 'queue complete'
-      $('.progress-bar').css('width', '100%').removeClass('active')
-      $('.percent').html('100% 完了')
-      @completeQueue()
       return null
-  # キュー終了時に実行する関数をセット
-  completeQueue: ->
-
   checkAPI : ()->
     log 'start'
     isbn = @getISBNFromQueue()
@@ -264,7 +258,7 @@ calil =
               specialCount+= 1
             if status==''
               status = '蔵書なし'
-            statuses[library.systemid] = status
+            statuses[library.formal] = status
             $('#results #'+isbn+' .status').append("""
 <table>
   <td>#{libraryName}</td>
@@ -274,8 +268,8 @@ calil =
             count += 1
       result = [@getBookData(isbn).property.replace('http://libmaro.kyoto.jp/kyotobook_list/', ''), @getBookData(isbn).title, @getBookData(isbn).ISBN, count, publicCount, univCount, specialCount]
       for lib in calil.libraries
-        if statuses[lib.systemid]
-          status = statuses[lib.systemid]
+        if statuses[lib.formal]
+          status = statuses[lib.formal]
         else
           status = ''
         result.push(status)
@@ -289,6 +283,14 @@ calil =
       @checkAPI()
     else
       log '終了'
+      $('.progress-bar').css('width', '100%').removeClass('active')
+      $('.percent').html('100% 完了')
+      @completeFunc()
+
+  # 終了時に実行する関数をセット
+  completeFunc: ->
+
+
 
 $ ->
   # 京都府の図書館一覧を取得する
@@ -321,9 +323,8 @@ $ ->
     .done ->
       calil.initQueue()
       # 終了時の処理
-      calil.completeQueue = ->
+      calil.completeFunc = ->
         $('#csv').show()
-      # 同時に実行する
       calil.checkAPI()
       calil.checkAPI()
       calil.checkAPI()

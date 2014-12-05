@@ -139,13 +139,9 @@ calil = {
       return q;
     } else {
       log('queue complete');
-      $('.progress-bar').css('width', '100%').removeClass('active');
-      $('.percent').html('100% 完了');
-      this.completeQueue();
       return null;
     }
   },
-  completeQueue: function() {},
   checkAPI: function() {
     var defer, isbn, param, url;
     log('start');
@@ -315,7 +311,7 @@ calil = {
             if (status === '') {
               status = '蔵書なし';
             }
-            statuses[library.systemid] = status;
+            statuses[library.formal] = status;
             $('#results #' + isbn + ' .status').append("<table>\n  <td>" + libraryName + "</td>\n  <td style=\"color:#FFFFFF;background:" + (this.getColor(status)) + "\">" + libname + ":" + status + "</td>\n</table>");
             count += 1;
           }
@@ -325,8 +321,8 @@ calil = {
       _ref1 = calil.libraries;
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         lib = _ref1[_i];
-        if (statuses[lib.systemid]) {
-          status = statuses[lib.systemid];
+        if (statuses[lib.formal]) {
+          status = statuses[lib.formal];
         } else {
           status = '';
         }
@@ -342,9 +338,13 @@ calil = {
     if (q) {
       return this.checkAPI();
     } else {
-      return log('終了');
+      log('終了');
+      $('.progress-bar').css('width', '100%').removeClass('active');
+      $('.percent').html('100% 完了');
+      return this.completeFunc();
     }
-  }
+  },
+  completeFunc: function() {}
 };
 
 $(function() {
@@ -385,7 +385,7 @@ $(function() {
       return _results;
     }).done(function() {
       calil.initQueue();
-      calil.completeQueue = function() {
+      calil.completeFunc = function() {
         return $('#csv').show();
       };
       calil.checkAPI();

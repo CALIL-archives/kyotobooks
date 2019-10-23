@@ -2,7 +2,7 @@
 
 京都が出てくる本が京都のどの図書館にあるか調べるためのサンプルプログラム
 
-デモ: http://calil.github.io/kyotobooks/
+デモ: http://calil-archives.github.io/kyotobooks/
 
 # 元にしたデータ
 
